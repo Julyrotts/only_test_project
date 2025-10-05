@@ -1,0 +1,379 @@
+{
+	"info": {
+		"_postman_id": "57f10e0c-d590-4d67-bdcc-ae9d1a71ef6e",
+		"name": "RestfulBooking",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "16508103"
+	},
+	"item": [
+		{
+			"name": "Ping сервера букингов",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"сервер доступен\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://restful-booker.herokuapp.com/ping"
+			},
+			"response": []
+		},
+		{
+			"name": "получить id букингов",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const chai = pm.require('npm:chai@6.2.0');",
+							"var allid = pm.response.json();   // массив всех букингов",
+							"var get_int = allid[5].bookingid; // обращаюсь к 6 элементу массива",
+							"pm.environment.set(\"get_int\", get_int); // id из 6 элемента массива",
+							" console.log(\"все букинги:\", get_int);",
+							"",
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"}); // проверка, что в ответе приходит успешное выполнение",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"}); // проверка времени отклика сервера, не превышает 200мс"
+						],
+						"type": "text/javascript",
+						"packages": {
+							"npm:chai@6.2.0": {
+								"id": "npm:chai@6.2.0"
+							}
+						},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{restfulbooking_url}}/booking",
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": []
+		},
+		{
+			"name": "Поучить токен",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const chai = pm.require('npm:chai@6.2.0');",
+							"var rbToken = pm.response.json();",
+							"pm.environment.set(\"token\", rbToken.token);",
+							" console.log(\"token пользователя извлечен:\", rbToken.token);",
+							"pm.test(\"ответ на создание токена 200\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {
+							"npm:chai@6.2.0": {
+								"id": "npm:chai@6.2.0"
+							}
+						},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\" : \"admin\",\n    \"password\" : \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://restful-booker.herokuapp.com/auth",
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Создать бронирование",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const chai = pm.require('npm:chai@6.2.0');\r",
+							"var bookingNumber = pm.response.json();\r",
+							"pm.environment.set(\"bookingid\", bookingNumber.bookingid);\r",
+							" console.log(\"запомнили номер своей брони:\", bookingNumber.bookingid);\r",
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {
+							"npm:chai@6.2.0": {
+								"id": "npm:chai@6.2.0"
+							}
+						},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstname\" : \"{{$randomFirstName}}\",\r\n    \"lastname\" : \"{{$randomLastName}}\",\r\n    \"totalprice\" : {{$randomInt}},  // случачйное целое 0 - 1000\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"{{$isoTimestamp}}\",   // сегодня\r\n        \"checkout\" : \"{{$randomDateFuture}}\"  // дата в будущем\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{restfulbooking_url}}/booking"
+			},
+			"response": []
+		},
+		{
+			"name": "Update бронь",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "token={{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{   // переиспользую для обновления номер брони, попученной в запросе на создание\n   \"firstname\" : \"James\",\n    \"lastname\" : \"Brown\"\n    //\"depositpaid\" : true,\n   // \"bookingdates\" : {\n   //     \"checkin\" : \"{{$isoTimestamp}}\",  // today\n   //     \"checkout\" : \"{{$isoTimestamp}}\"\n  //  },\n   // \"additionalneeds\" : \"Breakfast\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{restfulbooking_url}}/booking/{{bookingid}}",
+				"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Посмотреть свою бронь",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": "{{restfulbooking_url}}/booking/{{bookingid}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful DELETE request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "token={{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{restfulbooking_url}}/booking/{{bookingid}}",
+				"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "проверка юзера",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const chai = pm.require('npm:chai@6.2.0');\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});  // проверка статус кода\r",
+							"\r",
+							" var result = pm.response.json();\r",
+							"    var first=result.results[0].name.first;\r",
+							"    var age=result.results[0].dob.age;\r",
+							"    var postcode=result.results[0].location.postcode;\r",
+							"\r",
+							"pm.test(\"test name\", function () {\r",
+							"       pm.expect(first).to.be.a('string'); // провеерка, что имя это строка\r",
+							"       pm.expect(age).to.be.above(18);  // проверка возраста 18+\r",
+							"       pm.expect(postcode).to.be.a('number');  // проверка, что индекс это число\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body содержит мейл\", function () {\r",
+							"pm.expect(pm.response.text()).to.include(\"string_you_want_to_search\");\r",
+							"});\r",
+							"console.log(first); // имя\r",
+							"console.log(age);  //  возраст\r",
+							"console.log(postcode); // индекс адреса"
+						],
+						"type": "text/javascript",
+						"packages": {
+							"npm:chai@6.2.0": {
+								"id": "npm:chai@6.2.0"
+							}
+						},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://randomuser.me/api/"
+			},
+			"response": []
+		},
+		{
+			"name": "Токен для случайного юзера",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\" : \"{{$randomFirstName}}\",\r\n    \"password\" : \"{{$randomPassword}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{restfulbooking_url}}/auth"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://template.postman-echo.com"
+		}
+	]
+}
